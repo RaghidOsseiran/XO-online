@@ -179,17 +179,30 @@ void game_play_move(int input_move, game_state_t* game)
   game->side_to_play = (game->side_to_play == X) ? O : X;
 }
 
-void check_win_condition(const game_state_t* gs)
+void check_win_condition(game_state_t* gs, Side last_played_side)
 {
+  bool is_won = false;
   // check for horizontal alignements
+  for(int i = 0; i < DIMS; i++)
+  {
+    is_won = (gs->grid[i][0] == last_played_side && gs->grid[i][1] == last_played_side && gs->grid[i][2] == last_played_side) ? true : false;
+    if (is_won) {gs->finished = true; return;}
+  } 
   
-
 
   // check for vertical alignements
+  for(int i = 0; i < DIMS; i++)
+  {
+    is_won = (gs->grid[0][i] == last_played_side && gs->grid[1][i] == last_played_side && gs->grid[2][i] == last_played_side) ? true : false;
+    if (is_won) {gs->finished = true; return;}
+  }
 
 
-  
   // check for diagonal alignements
+  is_won = (gs->grid[0][0] == last_played_side && gs->grid[1][1] == last_played_side && gs->grid[2][2] == last_played_side) ? true : false;
+  if (is_won) {gs->finished = true; return;}
+  is_won = (gs->grid[0][2] == last_played_side && gs->grid[1][1] == last_played_side && gs->grid[2][0] == last_played_side) ? true : false; 
+  if (is_won) {gs->finished = true; return;}
 }
 
 int main()
@@ -211,8 +224,11 @@ int main()
         scanf("%s", move_input);
         input_move = input_to_move(move_input);
       } 
-      game_play_move(input_move, &game); 
-      check_win_condition(&game);
+      Side prev_player = game.side_to_play;
+      game_play_move(input_move, &game);
+      check_win_condition(&game, prev_player);
     }
+    print_game_state(&game);
+    printf("Player : %c has won!\n", (game.side_to_play == X) ? 'O' : 'X');
     return 0;
 }

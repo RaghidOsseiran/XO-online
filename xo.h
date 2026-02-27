@@ -39,6 +39,6 @@ bool test_valid_move(int input_move, const game_state_t* gs);
 
 void game_play_move(int input_move, game_state_t* gs);
 
-void check_win_condition(const game_state_t* gs);
+void check_win_condition(game_state_t* gs, Side last_played_side);
 
 #endif
